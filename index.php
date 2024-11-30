@@ -20,8 +20,7 @@ CREATE TABLE IF NOT EXISTS bookings (
     destination TEXT,
     flight_time TEXT,
     address TEXT,
-    flight_date TEXT,
-    UNIQUE(destination, flight_time, flight_date)
+    flight_date TEXT
 );
 ";
 
@@ -42,11 +41,15 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     die("Invalid email format");
 }
 
-if (!preg_match("/^[0-9]{10}$/", $phone)) {
-    die("Invalid phone number format. Please enter a 10-digit phone number.");
+if (!preg_match("/^[0-9]{11}$/", $phone)) {
+    die("Invalid phone number format. Please enter a 11-digit phone number.");
 }
 
-$stmt = $conn->prepare("SELECT COUNT(*) AS passenger_count FROM bookings WHERE destination=:destination AND flight_time=:flightTime AND flight_date=:flightDate");
+$stmt = $conn->prepare("
+    SELECT COUNT(*) AS passenger_count 
+    FROM bookings 
+    WHERE destination = :destination AND flight_time = :flightTime AND flight_date = :flightDate
+");
 $stmt->bindValue(':destination', $destination, SQLITE3_TEXT);
 $stmt->bindValue(':flightTime', $flightTime, SQLITE3_TEXT);
 $stmt->bindValue(':flightDate', $flightDate, SQLITE3_TEXT);
@@ -56,8 +59,10 @@ $row = $result->fetchArray(SQLITE3_ASSOC);
 if ($row['passenger_count'] >= 5) {
     echo "Sorry, this flight is already full. Please choose another time.";
 } else {
-    $stmt = $conn->prepare("INSERT INTO bookings (name, phone, email, destination, flight_time, address, flight_date) 
-                            VALUES (:name, :phone, :email, :destination, :flightTime, :address, :flightDate)");
+    $stmt = $conn->prepare("
+        INSERT INTO bookings (name, phone, email, destination, flight_time, address, flight_date) 
+        VALUES (:name, :phone, :email, :destination, :flightTime, :address, :flightDate)
+    ");
     $stmt->bindValue(':name', $name, SQLITE3_TEXT);
     $stmt->bindValue(':phone', $phone, SQLITE3_TEXT);
     $stmt->bindValue(':email', $email, SQLITE3_TEXT);
