@@ -1,11 +1,4 @@
 <?php
-// booking.php: This file will redirect to index.html if accessed directly.
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    // If the form is not submitted, redirect the user back to index.html
-    header("Location: index.html");
-    exit();
-}
-
 // If form is submitted, process booking...
 $servername = "127.0.0.1";
 $username = "root"; // Your MySQL username
