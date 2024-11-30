@@ -1,14 +1,11 @@
 <?php
-// Connect to SQLite database
-$dbname = 'airtravel.db'; // SQLite database file
+$dbname = 'airtravel.db';
 $conn = new SQLite3($dbname);
 
-// Check connection
 if (!$conn) {
     die("Connection failed: " . $conn->lastErrorMsg());
 }
 
-// Query to fetch all records from the bookings table
 $query = "SELECT * FROM bookings";
 $result = $conn->query($query);
 
@@ -96,6 +93,6 @@ if (!$result) {
 </body>
 </html>
 <?php
-// Close connection
+
 $conn->close();
 ?>
